@@ -2,69 +2,78 @@
 
 This document provides detailed instructions for deploying this Marimo app to GitHub Pages.
 
-## The Problem
+## Understanding Marimo HTML-WASM Export
 
-When deploying Marimo apps to GitHub Pages, you might encounter these common issues:
+After testing, we've discovered that `marimo export html-wasm` generates:
 
-1. **GitHub Pages shows the README instead of the app**: GitHub Pages defaults to showing README.md when there's no index.html file.
+1. An `index.html` file as the main entry point
+2. Various asset files (JS, CSS, fonts, images)
+3. No file explicitly named after the input Python file
 
-2. **Environment errors in the GitHub workflow**: The "github-pages" environment name may cause linter errors in some GitHub setups.
+Our solution ensures proper deployment by:
 
-3. **"Not Found" errors during deployment**: This happens when GitHub Pages hasn't been properly enabled.
+1. Renaming Marimo's generated `index.html` to `marimo_index.html`
+2. Using our custom `index.html` that automatically redirects to `marimo_index.html`
+3. Including a fallback UI with manual links in case the redirect fails
 
-## The Solution
+## GitHub Pages Deployment
 
-We've implemented a comprehensive solution:
+The GitHub Actions workflow handles deployment with these steps:
 
-### 1. Custom Index.html
+1. Exports the Marimo app to WebAssembly format
+2. Renames the Marimo-generated index.html to marimo_index.html
+3. Adds our custom index.html that redirects to the app
+4. Uploads everything to GitHub Pages
 
-We've created a custom `index.html` file that:
-- Has a nice loading spinner while checking for the app files
-- Automatically redirects to the Marimo-generated app file
-- Falls back to manual links if the app files aren't found
-- Provides a nice UI instead of a blank page or README
+## Troubleshooting
 
-### 2. Updated GitHub Workflow
+### Common Issues:
 
-Our `.github/workflows/deploy-wasm.yml` file:
-- Builds the Marimo WASM app
-- Copies our custom index.html to the build directory
-- Sets up proper GitHub Pages deployment
+#### 1. "Launch App" Button Doesn't Work
 
-### 3. Troubleshooting Steps
+If clicking the "Launch App" button leads to a 404, it could be because:
 
-If you still encounter issues:
+- The GitHub Pages deployment is still in progress (wait a few minutes)
+- The Marimo export generated files with different names (check Actions logs)
+- GitHub Pages is not enabled (see below)
 
-#### First Time Setup
+#### 2. GitHub Pages Not Enabled
 
-1. **Enable GitHub Pages**: 
-   - Go to your repository on GitHub
-   - Click on "Settings" → "Pages"
-   - Under "Source", select "GitHub Actions"
-   - Save changes
+Before deployment works, you must enable GitHub Pages:
 
-2. **Run the Workflow Manually**:
-   - Go to "Actions" tab
-   - Select the "Deploy Marimo WASM App to GitHub Pages" workflow
-   - Click "Run workflow"
+1. Go to your repository on GitHub
+2. Click on "Settings"
+3. Scroll down to the "GitHub Pages" section (or click on "Pages" in the sidebar)
+4. Under "Source", select "GitHub Actions"
+5. Click "Save"
 
-#### Linter Errors in Workflow File
+#### 3. "Not Found" Errors During Deployment
 
-If you see an error like `Value 'github-pages' is not valid`, there are two options:
+If you see "Error: Failed to create deployment (status: 404)" in your Actions log, GitHub Pages hasn't been properly enabled.
 
-1. Change the environment name to something else, such as:
-   ```yaml
-   environment:
-     name: pages
-     url: ${{ steps.deployment.outputs.page_url }}
-   ```
+#### 4. Environment Errors in Workflow File
 
-2. Ignore the linter error - the workflow will often still work despite this warning.
+If you see linter errors about `github-pages` not being a valid environment name, you can:
 
-#### After Deployment
+1. Ignore the errors (the workflow often works despite these warnings)
+2. Change the environment name to `pages` if the errors persist
 
-- The app will be available at: `https://<your-github-username>.github.io/<repository-name>/`
-- It might take a few minutes for changes to propagate
+## Manual Testing
+
+If you want to test the export locally:
+
+```bash
+# Test the export
+python test_export.py
+
+# Examine the generated files
+ls -la marimo_export_test/
+
+# Run a local server to test
+python -m http.server --directory marimo_export_test
+```
+
+Then open your browser to http://localhost:8000/ to see the app.
 
 ## File Structure
 

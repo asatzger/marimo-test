@@ -55,38 +55,40 @@
             border-radius: 4px;
             font-weight: 500;
             transition: background-color 0.2s;
+            margin: 0.5rem;
         }
         .button:hover {
             background-color: #1d4ed8;
         }
+        .error-message {
+            color: #e53e3e;
+            margin-top: 1rem;
+            padding: 0.5rem;
+            border: 1px solid #e53e3e;
+            border-radius: 4px;
+            background-color: #fff5f5;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+        .debug-info {
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            text-align: left;
+            color: #666;
+            display: none;
+        }
+        .file-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 1rem 0;
+        }
     </style>
     <script>
-        // Redirect to the Marimo app HTML file
+        // First try the Marimo-generated index file that we renamed
         window.onload = function() {
-            // First check if surface_plot_app.html exists
-            fetch('surface_plot_app.html')
-                .then(response => {
-                    if (response.ok) {
-                        window.location.href = 'surface_plot_app.html';
-                    } else {
-                        // If not found, check for other possible filenames
-                        return fetch('marimo_app.html');
-                    }
-                })
-                .then(response => {
-                    if (response && response.ok) {
-                        window.location.href = 'marimo_app.html';
-                    } else {
-                        // If still not found, show the manual link
-                        document.getElementById('loader').style.display = 'none';
-                        document.getElementById('manual-options').style.display = 'block';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error checking for app files:', error);
-                    document.getElementById('loader').style.display = 'none';
-                    document.getElementById('manual-options').style.display = 'block';
-                });
+            // Redirect to the Marimo app file
+            window.location.href = 'marimo_index.html';
         };
     </script>
 </head>
@@ -98,14 +100,23 @@
         <div id="loader" class="loader"></div>
         
         <div id="manual-options" style="display: none;">
-            <p>Please select one of the following app files:</p>
-            <p>
-                <a href="surface_plot_app.html" class="button">Launch App</a>
-            </p>
-            <p>
+            <p>Please select from the available app files:</p>
+            
+            <div class="file-list">
+                <a href="marimo_index.html" class="button">Launch App</a>
                 <a href="https://github.com/asatzger/marimo-test" class="button">View Source Code</a>
-            </p>
+            </div>
+            
+            <p>If the application doesn't load, please check the GitHub repository for instructions.</p>
         </div>
     </div>
+
+    <script>
+        // If the page is still visible after 3 seconds, show manual options
+        setTimeout(function() {
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('manual-options').style.display = 'block';
+        }, 3000);
+    </script>
 </body>
 </html> 

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="./favicon.ico" />
+    <!-- Preload is necessary because we show these images when we disconnect from the server,
+    but at that point we cannot load these images from the server -->
+    <link rel="preload" href="./assets/gradient-yHQUC_QB.png" as="image" />
+    <link rel="preload" href="./assets/noise-60BoTA8O.png" as="image" />
+    <!-- Preload the fonts -->
+    <link rel="preload" href="./assets/Lora-VariableFont_wght-B2ootaw-.ttf" as="font" crossorigin="anonymous" />
+    <link rel="preload" href="./assets/PTSans-Regular-CxL0S8W7.ttf" as="font" crossorigin="anonymous" />
+    <link rel="preload" href="./assets/PTSans-Bold-D9fedIX3.ttf" as="font" crossorigin="anonymous" />
+    <link rel="preload" href="./assets/FiraMono-Regular-BTCkDNvf.ttf" as="font" crossorigin="anonymous" />
+    <link rel="preload" href="./assets/FiraMono-Medium-DU3aDxX5.ttf" as="font" crossorigin="anonymous" />
+    <link rel="preload" href="./assets/FiraMono-Bold-CLVRCuM9.ttf" as="font" crossorigin="anonymous" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="a marimo app" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <link rel="manifest" href="./manifest.json" />
+
+    <script data-marimo="true">
+      function __resizeIframe(obj) {
+        var scrollbarHeight = 20; // Max between windows, mac, and linux
+
+        function setHeight() {
+          var element = obj.contentWindow.document.documentElement;
+          // If there is no vertical scrollbar, we don't need to resize the iframe
+          if (element.scrollHeight === element.clientHeight) {
+            return;
+          }
+
+          // Create a new height that includes the scrollbar height if it's visible
+          var hasHorizontalScrollbar = element.scrollWidth > element.clientWidth;
+          var newHeight = element.scrollHeight + (hasHorizontalScrollbar ? scrollbarHeight : 0);
+
+          // Only update the height if it's different from the current height
+          if (obj.style.height !== `${newHeight}px`) {
+            obj.style.height = `${newHeight}px`;
+          }
+        }
+
+        // Resize the iframe to the height of the content and bottom scrollbar height
+        setHeight();
+
+        // Resize the iframe when the content changes
+        const resizeObserver = new ResizeObserver((entries) => {
+          setHeight();
+        });
+        resizeObserver.observe(obj.contentWindow.document.body);
+      }
+    </script>
+    <marimo-filename hidden>notebook.py</marimo-filename>
+    <marimo-mode data-mode='read' hidden></marimo-mode>
+    <marimo-version data-version='0.11.19' hidden></marimo-version>
+    <marimo-user-config data-config='{"completion": {"activate_on_typing": true, "copilot": false}, "display": {"theme": "light", "code_editor_font_size": 14, "cell_output": "above", "default_width": "medium", "dataframes": "rich"}, "formatting": {"line_length": 79}, "keymap": {"preset": "default", "overrides": {}}, "runtime": {"auto_instantiate": true, "auto_reload": "off", "on_cell_change": "autorun", "watcher_on_save": "lazy", "output_max_bytes": 8000000, "std_stream_max_bytes": 1000000, "pythonpath": []}, "save": {"autosave": "off", "autosave_delay": 1000, "format_on_save": false}, "package_management": {"manager": "pip"}, "server": {"browser": "default", "follow_symlink": false}, "snippets": {"custom_paths": [], "include_default_snippets": true}}' data-overrides='{}' hidden></marimo-user-config>
+    <marimo-app-config data-config='{"width": "medium"}' hidden></marimo-app-config>
+    <marimo-server-token data-token='123' hidden></marimo-server-token>
+    <title>surface plot app</title>
+    <script type="module" crossorigin src="./assets/index-Cg7PcY_l.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-CpHxmtkS.css">
+  <marimo-wasm hidden=""></marimo-wasm>
+    <script>
+        if (window.location.protocol === 'file:') {
+            alert('Warning: This file must be served by an HTTP server to function correctly.');
+        }
+    </script>
+    
+    <style>
+        #save-button {
+            display: none !important;
+        }
+        #filename-input {
+            display: none !important;
+        }
+    </style>
+    <marimo-code hidden="" data-show-code="false">import%20marimo%0A%0A__generated_with%20%3D%20%220.11.19%22%0Aapp%20%3D%20marimo.App(width%3D%22medium%22)%0A%0A%0A%40app.cell%0Adef%20_()%3A%0A%20%20%20%20import%20marimo%20as%20mo%0A%20%20%20%20import%20numpy%20as%20np%0A%20%20%20%20import%20matplotlib.pyplot%20as%20plt%0A%20%20%20%20import%20matplotlib.cm%20as%20cm%0A%20%20%20%20from%20mpl_toolkits.mplot3d%20import%20Axes3D%0A%20%20%20%20return%20Axes3D%2C%20cm%2C%20mo%2C%20np%2C%20plt%0A%0A%0A%40app.cell%0Adef%20_(mo)%3A%0A%20%20%20%20%23%20Create%20UI%20elements%20for%20controlling%20the%203D%20surface%20plot%0A%0A%20%20%20%20%23%20Range%20controls%0A%20%20%20%20x_start%20%3D%20mo.ui.number(value%3D-5%2C%20label%3D%22X%20Start%22%2C%20min%3D-20%2C%20max%3D0%2C%20step%3D0.5)%0A%20%20%20%20x_end%20%3D%20mo.ui.number(value%3D5%2C%20label%3D%22X%20End%22%2C%20min%3D0%2C%20max%3D20%2C%20step%3D0.5)%0A%20%20%20%20y_start%20%3D%20mo.ui.number(value%3D-5%2C%20label%3D%22Y%20Start%22%2C%20min%3D-20%2C%20max%3D0%2C%20step%3D0.5)%0A%20%20%20%20y_end%20%3D%20mo.ui.number(value%3D5%2C%20label%3D%22Y%20End%22%2C%20min%3D0%2C%20max%3D20%2C%20step%3D0.5)%0A%0A%20%20%20%20%23%20Visualization%20controls%0A%20%20%20%20resolution%20%3D%20mo.ui.slider(10%2C%20150%2C%20value%3D50%2C%20label%3D%22Resolution%22%2C%20step%3D5)%0A%20%20%20%20colormap%20%3D%20mo.ui.dropdown(%0A%20%20%20%20%20%20%20%20options%3D%5B%22viridis%22%2C%20%22plasma%22%2C%20%22inferno%22%2C%20%22magma%22%2C%20%22cividis%22%2C%20%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22Reds%22%2C%20%22Blues%22%2C%20%22Greens%22%2C%20%22Purples%22%2C%20%22jet%22%5D%2C%0A%20%20%20%20%20%20%20%20value%3D%22viridis%22%2C%0A%20%20%20%20%20%20%20%20label%3D%22Color%20Map%22%0A%20%20%20%20)%0A%0A%20%20%20%20%23%20Button%20to%20reset%20to%20default%20values%0A%20%20%20%20def%20reset_values(_)%3A%0A%20%20%20%20%20%20%20%20x_start.set(-5)%0A%20%20%20%20%20%20%20%20x_end.set(5)%0A%20%20%20%20%20%20%20%20y_start.set(-5)%0A%20%20%20%20%20%20%20%20y_end.set(5)%0A%20%20%20%20%20%20%20%20resolution.set(50)%0A%20%20%20%20%20%20%20%20colormap.set(%22viridis%22)%0A%0A%20%20%20%20reset_button%20%3D%20mo.ui.button(label%3D%22Reset%20to%20Defaults%22%2C%20on_click%3Dreset_values)%0A%0A%20%20%20%20%23%20Organize%20UI%20elements%20into%20groups%0A%20%20%20%20range_controls%20%3D%20mo.hstack(%5B%0A%20%20%20%20%20%20%20%20mo.vstack(%5Bmo.md(%22%23%23%23%20X%20Range%22)%2C%20x_start%2C%20x_end%5D)%2C%0A%20%20%20%20%20%20%20%20mo.vstack(%5Bmo.md(%22%23%23%23%20Y%20Range%22)%2C%20y_start%2C%20y_end%5D)%0A%20%20%20%20%5D)%0A%0A%20%20%20%20visual_controls%20%3D%20mo.vstack(%5B%0A%20%20%20%20%20%20%20%20mo.md(%22%23%23%23%20Appearance%22)%2C%0A%20%20%20%20%20%20%20%20mo.hstack(%5Bresolution%2C%20colormap%5D)%2C%0A%20%20%20%20%20%20%20%20reset_button%0A%20%20%20%20%5D)%0A%0A%20%20%20%20%23%20Display%20all%20UI%20control%20groups%0A%20%20%20%20mo.vstack(%5Brange_controls%2C%20visual_controls%5D%2C%20gap%3D2)%0A%20%20%20%20return%20(%0A%20%20%20%20%20%20%20%20colormap%2C%0A%20%20%20%20%20%20%20%20range_controls%2C%0A%20%20%20%20%20%20%20%20reset_button%2C%0A%20%20%20%20%20%20%20%20reset_values%2C%0A%20%20%20%20%20%20%20%20resolution%2C%0A%20%20%20%20%20%20%20%20visual_controls%2C%0A%20%20%20%20%20%20%20%20x_end%2C%0A%20%20%20%20%20%20%20%20x_start%2C%0A%20%20%20%20%20%20%20%20y_end%2C%0A%20%20%20%20%20%20%20%20y_start%2C%0A%20%20%20%20)%0A%0A%0A%40app.cell%0Adef%20_(mo)%3A%0A%20%20%20%20%23%20Add%20descriptive%20text%20explaining%20the%20app%0A%20%20%20%20mo.md(%22%22%22%0A%20%20%20%20%23%20Interactive%203D%20Surface%20Plot%0A%0A%20%20%20%20This%20application%20visualizes%20a%203D%20surface%20plot%20of%20the%20function%3A%0A%0A%20%20%20%20%24z%20%3D%20%5Csin(%5Csqrt%7Bx%5E2%20%2B%20y%5E2%7D)%24%0A%0A%20%20%20%20This%20function%20creates%20a%20%22ripple%22%20effect%20that%20radiates%20outward%20from%20the%20origin.%0A%0A%20%20%20%20%23%23%20How%20to%20use%20the%20controls%3A%0A%0A%20%20%20%20-%20**X%20Start%2FEnd**%3A%20Adjust%20the%20range%20of%20the%20X-axis%0A%20%20%20%20-%20**Y%20Start%2FEnd**%3A%20Adjust%20the%20range%20of%20the%20Y-axis%0A%20%20%20%20-%20**Resolution**%3A%20Control%20the%20detail%20level%20of%20the%20plot%20(higher%20values%20show%20more%20detail%20but%20may%20be%20slower)%0A%20%20%20%20-%20**Color%20Map**%3A%20Change%20the%20color%20scheme%20of%20the%203D%20surface%0A%20%20%20%20-%20**Reset%20Button**%3A%20Return%20all%20controls%20to%20their%20default%20values%0A%0A%20%20%20%20As%20you%20adjust%20the%20controls%2C%20the%20plot%20will%20update%20in%20real-time.%0A%0A%20%20%20%20Try%20setting%20X%20and%20Y%20ranges%20to%20similar%20values%20for%20a%20symmetrical%20view%2C%20or%20experiment%20with%20different%20ranges%20to%20see%20how%20the%20surface%20changes!%0A%20%20%20%20%22%22%22)%0A%20%20%20%20return%0A%0A%0A%40app.cell%0Adef%20_(np%2C%20resolution%2C%20x_end%2C%20x_start%2C%20y_end%2C%20y_start)%3A%0A%20%20%20%20%23%20Generate%20data%20for%20the%203D%20surface%20plot%20based%20on%20UI%20inputs%0A%20%20%20%20x%20%3D%20np.linspace(x_start.value%2C%20x_end.value%2C%20resolution.value)%0A%20%20%20%20y%20%3D%20np.linspace(y_start.value%2C%20y_end.value%2C%20resolution.value)%0A%20%20%20%20x%2C%20y%20%3D%20np.meshgrid(x%2C%20y)%0A%20%20%20%20z%20%3D%20np.sin(np.sqrt(x**2%20%2B%20y**2))%0A%20%20%20%20return%20x%2C%20y%2C%20z%0A%0A%0A%40app.cell%0Adef%20_(colormap%2C%20plt%2C%20x%2C%20y%2C%20z)%3A%0A%20%20%20%20%23%20Create%20the%203D%20surface%20plot%0A%20%20%20%20fig%20%3D%20plt.figure(figsize%3D(10%2C%207))%0A%20%20%20%20ax%20%3D%20fig.add_subplot(111%2C%20projection%3D'3d')%0A%20%20%20%20surf%20%3D%20ax.plot_surface(x%2C%20y%2C%20z%2C%20cmap%3Dcolormap.value)%0A%20%20%20%20fig.colorbar(surf%2C%20ax%3Dax%2C%20shrink%3D0.5%2C%20aspect%3D5)%0A%20%20%20%20ax.set_title('3D%20Surface%20Plot')%0A%20%20%20%20ax.set_xlabel('X%20axis')%0A%20%20%20%20ax.set_ylabel('Y%20axis')%0A%20%20%20%20ax.set_zlabel('Z%20axis')%0A%20%20%20%20plt.gca()%0A%20%20%20%20return%20ax%2C%20fig%2C%20surf%0A%0A%0Aif%20__name__%20%3D%3D%20%22__main__%22%3A%0A%20%20%20%20app.run()%0A</marimo-code></head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
