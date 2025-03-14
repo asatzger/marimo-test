@@ -40,6 +40,14 @@ jobs:
         run: |
           mkdir -p build
           marimo export html-wasm surface_plot_app.py -o build --mode run
+          # Copy our custom index.html to the build directory
+          cp index.html build/
+          # List files to verify
+          ls -la build/
+
+      - name: 🚀 Setup Pages
+        id: pages
+        uses: actions/configure-pages@v4
 
       - name: 📦 Upload Pages Artifact
         uses: actions/upload-pages-artifact@v3
@@ -49,9 +57,12 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    
+    # Deploy to the github-pages environment
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+      
     steps:
       - name: 🌐 Deploy to GitHub Pages
         id: deployment
