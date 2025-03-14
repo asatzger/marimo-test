@@ -42,9 +42,9 @@ jobs:
           rm -rf build
           mkdir -p build
           
-          # Export the notebook to WASM with verbose output
+          # Export the notebook to WASM
           echo "Running marimo export..."
-          marimo export html-wasm surface_plot_app.py -o build --mode run -v
+          marimo export html-wasm surface_plot_app.py -o build --mode run
           
           # Check the generated files
           echo "Files in build directory:"

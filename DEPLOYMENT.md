@@ -25,6 +25,28 @@ The GitHub Actions workflow handles deployment with these steps:
 3. Adds our custom index.html that redirects to the app
 4. Uploads everything to GitHub Pages
 
+## Command Line Options
+
+The `marimo export html-wasm` command supports these options:
+
+```
+Options:
+  -o, --output PATH             Output directory to save the HTML to. [required]
+  --mode [edit|run]             Whether the notebook code should be editable
+                                or readonly.  [default: run; required]
+  --watch / --no-watch          Whether to watch the original file and export
+                                upon change  [default: no-watch]
+  --show-code / --no-show-code  Whether to show code by default in the
+                                exported HTML file; only relevant for run
+                                mode.  [default: no-show-code]
+  --sandbox / --no-sandbox      Run the command in an isolated virtual
+                                environment using `uv run --isolated`.
+                                Requires `uv`.
+  --help                        Show this message and exit.
+```
+
+Note that **the `-v` (verbose) flag is not supported** by this command.
+
 ## Troubleshooting
 
 ### Common Issues:
@@ -79,5 +101,5 @@ Then open your browser to http://localhost:8000/ to see the app.
 
 When properly deployed, your Pages site should have:
 - `index.html` - The landing page that redirects to the app
-- `surface_plot_app.html` - The Marimo-generated WebAssembly app
+- `marimo_index.html` - The Marimo-generated WebAssembly app
 - Supporting files for the app (JavaScript, CSS, WebAssembly) 
