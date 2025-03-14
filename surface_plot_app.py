@@ -18,7 +18,7 @@ def _():
 
 @app.cell
 def _():
-    # Create UI elements for controlling the 3D surface plot
+    # Create UI elements for user input
     x_start = mo.ui.number(value=-5, label="X Start")
     x_end = mo.ui.number(value=5, label="X End")
     y_start = mo.ui.number(value=-5, label="Y Start")
@@ -31,16 +31,13 @@ def _():
 
 @app.cell
 def _():
-    # Generate data for the 3D surface plot based on UI inputs
+    # Generate data for 3D surface plot based on user input
     x = np.linspace(x_start.value, x_end.value, resolution.value)
     y = np.linspace(y_start.value, y_end.value, resolution.value)
     x, y = np.meshgrid(x, y)
     z = np.sin(np.sqrt(x**2 + y**2))
-    return
-
-@app.cell
-def _():
-    # Create the 3D surface plot
+    
+    # Create 3D surface plot
     fig = plt.figure(figsize=(10, 7))
     ax = fig.add_subplot(111, projection='3d')
     surf = ax.plot_surface(x, y, z, cmap='viridis')
@@ -52,4 +49,4 @@ def _():
     return
 
 if __name__ == "__main__":
-    app.run() 
+    app.run()
