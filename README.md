@@ -61,14 +61,31 @@ The WebAssembly version allows you to interact with the app directly in your bro
 
 This repository includes a GitHub Actions workflow that automatically deploys the app to GitHub Pages whenever changes are pushed to the main branch.
 
-To enable GitHub Pages deployment:
+### Important: Enable GitHub Pages First
 
-1. Go to your repository settings on GitHub
-2. Navigate to "Pages" in the sidebar
-3. Under "Build and deployment", select "GitHub Actions" as the source
-4. Ensure the repository has permissions to deploy to Pages
+Before the GitHub Action will work, you must first enable GitHub Pages in your repository:
 
-After your first push to the main branch, the app will be automatically built and deployed.
+1. Go to your repository on GitHub
+2. Click on "Settings"
+3. Scroll down to the "GitHub Pages" section (or click on "Pages" in the sidebar)
+4. Under "Source", select "GitHub Actions" from the dropdown menu
+5. Click "Save"
+
+If you try to run the workflow before enabling Pages, you'll see an error like this:
+```
+Error: Failed to create deployment (status: 404) [...] Ensure GitHub Pages has been enabled
+```
+
+### Troubleshooting GitHub Pages Deployment
+
+If you encounter errors with the GitHub Pages deployment:
+
+1. Verify GitHub Pages is enabled as described above
+2. Make sure your repository has the correct permissions set (these are configured in the workflow file)
+3. Check if your organization has any restrictions on GitHub Pages deployment
+4. Try running the workflow manually through the Actions tab on GitHub
+
+After fixing these settings and your first successful push to the main branch, the app will be automatically built and deployed.
 
 ## Usage
 
